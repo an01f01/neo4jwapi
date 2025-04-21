@@ -5,16 +5,10 @@ RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
 COPY package.json /home/node/app/
-#COPY schema.graphql /home/node/app/
 USER node 
 
 COPY --chown=node:node server.js /home/node/app/
 
-#COPY index.js api/
-#COPY package-lock.json api/
-#COPY Dockerfile api/
-# Changes working directory to the new directory just created
-#WORKDIR /api
 # Installs npm dependencies on container
 RUN npm install
 # Informs Docker that the container listens on the 
