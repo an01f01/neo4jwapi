@@ -1,0 +1,42 @@
+# A docker-compose must always start by the version tag.
+# We use '3' because it's the last version at this time.
+version: '3'
+
+services:
+
+  api:
+    build: api/
+    command: node server.js   
+    ports:
+      - "4000:4000"
+      - "8085:8085"
+    environment:
+      - NEO4JWAPI_NEO4J=bolt://neo4j4:7687
+      - NEO4JWAPI_USER=neo4j
+      - NEO4JWAPI_PWD=testMe1234!
+      - NEO4JWAPI_PORT=8086
+    depends_on:
+      - neo4j4
+    networks:
+      - my-network
+
+  neo4j4:
+    image: registry1.dso.mil/ironbank/opensource/neo4j/neo4j:4.4.12
+    ports:
+      - "7687:7687"   # BOLT
+      - "7474:7474"   # HTTP
+      - "7473:7473"   # HTTP
+    volumes:
+      - ./neo4j/plugins:/var/lib/neo4j/plugins
+      - ./neo4j/data:/var/lib/neo4j/data
+      - ./neo4j/import:/import
+      - ./neo4j/conf:/var/lib/neo4j/conf
+      - ./neo4j/logs:/logs
+    environment:
+      - NEO4J_AUTH=neo4j/testMe1234!
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
